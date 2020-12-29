@@ -20,6 +20,14 @@ def slack_message(
 
     channel = kwargs.pop('channel', app_settings.CHANNEL)
     backend = get_backend(name=kwargs.pop('backend', None))
+    endpoint_url = kwargs.pop('endpoint_url', app_settings.DEFAULT_ENDPOINT_URL)
+    try:
+        data['ts'] = kwargs.pop('ts')
+    except KeyError:
+        pass
+
+    data['unfurl_links'] = kwargs.pop('unfurl_links', False)
+    data['unfurl_media'] = kwargs.pop('unfurl_media', False)
 
     context = dict(context or {}, settings=settings)
     if fail_silently is None:
@@ -57,7 +65,7 @@ def slack_message(
             'required': NOT_REQUIRED,
         },
         'endpoint_url': {
-            'default': app_settings.ENDPOINT_URL,
+            'default': endpoint_url,
             'render': ALWAYS,
             'required': NOT_REQUIRED,
         },
@@ -143,8 +151,6 @@ def slack_message(
         for x in ('attachments', 'blocks'):
             if x in data:
                 data[x] = json.dumps(data[x])
-    else:
-        data = {'payload': json.dumps(data)}
 
     try:
         return backend.send(endpoint_url, data, **kwargs)

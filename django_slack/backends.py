@@ -1,3 +1,4 @@
+import datetime
 import pprint
 import logging
 import urllib.request
@@ -102,6 +103,9 @@ class TestBackend(Backend):
 
     def send(self, url, message_data, **kwargs):
         self.messages.append(message_data)
+        return {
+            'ts': datetime.datetime.utcnow().timestamp()
+        }
 
     def reset_messages(self):
         self.messages = []
