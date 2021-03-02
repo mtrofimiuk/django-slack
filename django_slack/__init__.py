@@ -333,3 +333,4 @@ to store messages to inspect them later::
 """
 
 from .api import slack_message
+from .api import message_reaction

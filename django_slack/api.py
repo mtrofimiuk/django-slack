@@ -157,3 +157,15 @@ def slack_message(
     except Exception:
         if not fail_silently:
             raise
+
+
+def message_reaction(reaction_name, channel_id, ts, **kwargs):
+    backend = get_backend(name=kwargs.pop('backend', None))
+    endpoint_url = 'https://slack.com/api/reactions.add'
+    data = {
+        'token': app_settings.TOKEN,
+        'channel': channel_id,
+        'timestamp': ts,
+        'name': reaction_name
+    }
+    return backend.send(endpoint_url, data, **kwargs)
